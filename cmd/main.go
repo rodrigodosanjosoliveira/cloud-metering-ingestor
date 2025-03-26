@@ -3,6 +3,8 @@ package main
 import (
 	"ingestor/internal/handler"
 	"ingestor/internal/infra/logger"
+	"ingestor/internal/infra/publisher"
+	"ingestor/internal/service"
 
 	"github.com/gin-gonic/gin"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
@@ -33,7 +35,10 @@ func main() {
 
 	r.GET("/metrics", gin.WrapH(promhttp.Handler()))
 
-	h := handler.NewPulseHandler(log)
+	pub := publisher.NewLogPublisher(log)
+	aggregator := service.NewAggregatorService(pub)
+
+	h := handler.NewPulseHandler(log, aggregator)
 
 	r.POST("/pulses", h.CreatePulse)
 	r.GET("/aggregates", h.GetAggregates)
