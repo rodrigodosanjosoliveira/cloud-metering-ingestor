@@ -3,6 +3,7 @@ package main
 import (
 	"ingestor/internal/handler"
 	"ingestor/internal/infra/logger"
+	"ingestor/internal/infra/metrics"
 	"ingestor/internal/infra/publisher"
 	"ingestor/internal/service"
 
@@ -32,6 +33,8 @@ func main() {
 	log.Info("Starting the application...")
 
 	r := gin.Default()
+
+	metrics.Init()
 
 	r.GET("/metrics", gin.WrapH(promhttp.Handler()))
 

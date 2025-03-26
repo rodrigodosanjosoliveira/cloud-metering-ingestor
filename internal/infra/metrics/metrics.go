@@ -14,7 +14,7 @@ var (
 	})
 
 	AggregationCount = prometheus.NewGauge(prometheus.GaugeOpts{
-		Name: "current_aggregation_count",
+		Name: "current_aggregation",
 		Help: "Number of active aggregation groups",
 	})
 )
