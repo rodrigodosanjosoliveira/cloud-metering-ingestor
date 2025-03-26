@@ -1,6 +1,7 @@
 package handler
 
 import (
+	"ingestor/internal/infra/metrics"
 	"ingestor/internal/infra/publisher"
 	"ingestor/internal/infra/validator"
 	"ingestor/internal/model"
@@ -60,6 +61,8 @@ func (h *PulseHandler) CreatePulse(c *gin.Context) {
 
 	h.aggregator.AddPulse(pulse)
 
+	metrics.PulsesReceived.Inc()
+
 	c.Status(http.StatusCreated)
 }
 
@@ -73,6 +76,8 @@ func (h *PulseHandler) CreatePulse(c *gin.Context) {
 func (h *PulseHandler) GetAggregates(c *gin.Context) {
 	aggregates := h.aggregator.GetAggregatesDTO()
 
+	metrics.AggregationCount.Set(float64(len(aggregates)))
+
 	c.JSON(http.StatusOK, aggregates)
 }
 
@@ -84,6 +89,10 @@ func (h *PulseHandler) GetAggregates(c *gin.Context) {
 // @Router /flush [post]
 func (h *PulseHandler) FlushAggregates(c *gin.Context) {
 	h.aggregator.Flush()
+
+	metrics.FlushTotal.Inc()
+
+	metrics.AggregationCount.Set(0)
 
 	c.Status(http.StatusOK)
 }
