@@ -1,11 +1,10 @@
 package handler
 
 import (
+	"ingestor/internal/core/dto"
 	"ingestor/internal/infra/metrics"
-	"ingestor/internal/infra/publisher"
 	"ingestor/internal/infra/validator"
 	"ingestor/internal/model"
-	"ingestor/internal/service"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -13,15 +12,19 @@ import (
 	"go.uber.org/zap"
 )
 
-type PulseHandler struct {
-	logger     *zap.SugaredLogger
-	aggregator *service.AggregatorService
+//go:generate mockery --name=Aggregator --output=./mocks --with-expecter
+type Aggregator interface {
+	AddPulse(pulse model.Pulse)
+	GetAggregatedData() []dto.AggregatedPulse
+	FlushAggregates()
 }
 
-func NewPulseHandler(logger *zap.SugaredLogger) *PulseHandler {
-	pub := publisher.NewLogPublisher(logger)
-	aggregator := service.NewAggregatorService(pub)
+type PulseHandler struct {
+	logger     *zap.SugaredLogger
+	aggregator Aggregator
+}
 
+func NewPulseHandler(logger *zap.SugaredLogger, aggregator Aggregator) *PulseHandler {
 	return &PulseHandler{
 		logger:     logger,
 		aggregator: aggregator,
@@ -52,7 +55,7 @@ func (h *PulseHandler) CreatePulse(c *gin.Context) {
 	}
 
 	if err := val.Validate(&pulse); err != nil {
-		h.logger.Warn("Validation error", zap.Error(err))
+		h.logger.Warn("Invalid pulse data.", zap.Error(err))
 
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 
@@ -60,6 +63,8 @@ func (h *PulseHandler) CreatePulse(c *gin.Context) {
 	}
 
 	h.aggregator.AddPulse(pulse)
+
+	h.logger.Infow("Pulse added to aggregator", "pulse", pulse)
 
 	metrics.PulsesReceived.Inc()
 
@@ -74,9 +79,19 @@ func (h *PulseHandler) CreatePulse(c *gin.Context) {
 // @Success 200 {array} service.AggregatedPulseDTO
 // @Router /aggregates [get]
 func (h *PulseHandler) GetAggregates(c *gin.Context) {
-	aggregates := h.aggregator.GetAggregatesDTO()
+	aggregates := h.aggregator.GetAggregatedData()
+
+	if aggregates == nil {
+		h.logger.Error("Failed to get aggregated data")
+
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to get aggregated data"})
+
+		return
+	}
 
 	metrics.AggregationCount.Set(float64(len(aggregates)))
+
+	h.logger.Infow("Aggregated data retrieved", "aggregates", aggregates)
 
 	c.JSON(http.StatusOK, aggregates)
 }
@@ -88,11 +103,13 @@ func (h *PulseHandler) GetAggregates(c *gin.Context) {
 // @Success 200 {string} string "Flushed"
 // @Router /flush [post]
 func (h *PulseHandler) FlushAggregates(c *gin.Context) {
-	h.aggregator.Flush()
+	h.aggregator.FlushAggregates()
+
+	h.logger.Infow("Aggregated data flushed")
 
 	metrics.FlushTotal.Inc()
 
 	metrics.AggregationCount.Set(0)
 
-	c.Status(http.StatusOK)
+	c.JSON(http.StatusOK, gin.H{"status": "Flushed"})
 }
