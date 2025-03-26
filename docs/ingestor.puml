@@ -10,6 +10,6 @@ package "cloud-metering-ingestor" {
 }
 
 Client --> [Gin Router] : HTTP\n(/pulses, /aggregates, /flush)
-'[Gin Router] --> [Prometheus Middleware] : metrics
+[Gin Router] --> [Prometheus Middleware] : metrics
 
 @enduml

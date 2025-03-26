@@ -62,7 +62,7 @@ Simulates publishing aggregated data and clears the internal state.
 
 - Swagger UI: [http://localhost:8080/swagger/index.html](http://localhost:8080/swagger/index.html)
 - Swagger spec: [`docs/swagger.yaml`](docs/swagger.yaml)
-- Architecture Diagram: [`docs/diagram.puml`](docs/diagram.puml)
+- Architecture Diagram: [`docs/ingestor.puml`](docs/ingestor.puml)
 
 ---
 
