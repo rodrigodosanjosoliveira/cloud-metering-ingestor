@@ -1,24 +1,6 @@
 basePath: /
 definitions:
-  model.Pulse:
-    properties:
-      product_sku:
-        type: string
-      tenant:
-        type: string
-      timestamp:
-        type: string
-      use_unit:
-        type: string
-      used_amount:
-        type: number
-    required:
-    - product_sku
-    - tenant
-    - use_unit
-    - used_amount
-    type: object
-  service.AggregatedPulseDTO:
+  dto.AggregatedPulse:
     properties:
       product_sku:
         type: string
@@ -28,6 +10,28 @@ definitions:
         type: number
       use_unit:
         type: string
+    type: object
+  model.Pulse:
+    properties:
+      product_sku:
+        type: string
+      tenant:
+        type: string
+      use_unit:
+        enum:
+        - GB
+        - MB
+        - KB
+        - TB
+        - PB
+        type: string
+      used_amount:
+        type: number
+    required:
+    - product_sku
+    - tenant
+    - use_unit
+    - used_amount
     type: object
 info:
   contact: {}
@@ -45,7 +49,7 @@ paths:
           description: OK
           schema:
             items:
-              $ref: '#/definitions/service.AggregatedPulseDTO'
+              $ref: '#/definitions/dto.AggregatedPulse'
             type: array
       summary: Get aggregated usage data
       tags:

@@ -31,7 +31,7 @@ const docTemplate = `{
                         "schema": {
                             "type": "array",
                             "items": {
-                                "$ref": "#/definitions/service.AggregatedPulseDTO"
+                                "$ref": "#/definitions/dto.AggregatedPulse"
                             }
                         }
                     }
@@ -100,6 +100,23 @@ const docTemplate = `{
         }
     },
     "definitions": {
+        "dto.AggregatedPulse": {
+            "type": "object",
+            "properties": {
+                "product_sku": {
+                    "type": "string"
+                },
+                "tenant": {
+                    "type": "string"
+                },
+                "total_used": {
+                    "type": "number"
+                },
+                "use_unit": {
+                    "type": "string"
+                }
+            }
+        },
         "model.Pulse": {
             "type": "object",
             "required": [
@@ -115,31 +132,18 @@ const docTemplate = `{
                 "tenant": {
                     "type": "string"
                 },
-                "timestamp": {
-                    "type": "string"
-                },
                 "use_unit": {
-                    "type": "string"
+                    "type": "string",
+                    "enum": [
+                        "GB",
+                        "MB",
+                        "KB",
+                        "TB",
+                        "PB"
+                    ]
                 },
                 "used_amount": {
                     "type": "number"
-                }
-            }
-        },
-        "service.AggregatedPulseDTO": {
-            "type": "object",
-            "properties": {
-                "product_sku": {
-                    "type": "string"
-                },
-                "tenant": {
-                    "type": "string"
-                },
-                "total_used": {
-                    "type": "number"
-                },
-                "use_unit": {
-                    "type": "string"
                 }
             }
         }

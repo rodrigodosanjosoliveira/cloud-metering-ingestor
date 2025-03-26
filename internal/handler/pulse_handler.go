@@ -76,7 +76,7 @@ func (h *PulseHandler) CreatePulse(c *gin.Context) {
 // @Description Returns current aggregation grouped by tenant, SKU and unit
 // @Tags pulses
 // @Produce json
-// @Success 200 {array} service.AggregatedPulseDTO
+// @Success 200 {array} dto.AggregatedPulse
 // @Router /aggregates [get]
 func (h *PulseHandler) GetAggregates(c *gin.Context) {
 	aggregates := h.aggregator.GetAggregatedData()
