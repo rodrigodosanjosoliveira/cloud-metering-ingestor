@@ -1,4 +1,4 @@
-[![Go CI](https://github.com/rodrigodosanjosoliveira/cloud-metering-ingestor/actions/workflows/ci.yml/badge.svg)](https://github.com/rodrigodosanjosoliveira/cloud-metering-ingestor/actions/workflows/ci.yml)
+[![Go CI](https://github.com/rodrigodosanjosoliveira/cloud-metering-ingestor/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/rodrigodosanjosoliveira/cloud-metering-ingestor/actions/workflows/ci.yml)
 [![codecov](https://codecov.io/gh/rodrigodosanjosoliveira/cloud-metering-ingestor/graph/badge.svg?token=DOFQTSDUL3)](https://codecov.io/gh/rodrigodosanjosoliveira/cloud-metering-ingestor)
 
 # Cloud Metering Ingestor
