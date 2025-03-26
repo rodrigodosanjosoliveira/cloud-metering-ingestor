@@ -46,7 +46,6 @@ Receive a new usage pulse.
   "product_sku": "sku_vm_123",
   "used_amount": 307,
   "use_unit": "KB",
-  "timestamp": "2025-03-21T10:30:00Z"
 }
 ```
 
