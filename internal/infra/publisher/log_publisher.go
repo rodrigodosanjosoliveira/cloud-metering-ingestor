@@ -1,7 +1,7 @@
 package publisher
 
 import (
-	"ingestor/internal/service"
+	"ingestor/internal/core/dto"
 
 	"go.uber.org/zap"
 )
@@ -16,7 +16,7 @@ func NewLogPublisher(logger *zap.SugaredLogger) *LogPublisher {
 	}
 }
 
-func (p *LogPublisher) Publish(pulses []service.AggregatedPulseDTO) error {
+func (p *LogPublisher) Publish(pulses []dto.AggregatedPulse) error {
 	p.logger.Infow("Simulated publish of aggregated pulses", "payload", pulses)
 
 	return nil
