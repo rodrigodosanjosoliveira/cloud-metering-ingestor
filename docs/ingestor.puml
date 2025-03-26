@@ -1,0 +1,15 @@
+@startuml
+actor "External Client" as Client
+
+package "cloud-metering-ingestor" {
+  [Gin Router] --> [PulseHandler]
+  [PulseHandler] --> [AggregatorService]
+  [PulseHandler] --> [Logger (Zap)]
+  [AggregatorService] --> [Publisher Interface]
+  [Publisher Interface] --> [LogPublisher]
+}
+
+Client --> [Gin Router] : HTTP\n(/pulses, /aggregates, /flush)
+'[Gin Router] --> [Prometheus Middleware] : metrics
+
+@enduml
