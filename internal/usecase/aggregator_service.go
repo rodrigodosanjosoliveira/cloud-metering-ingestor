@@ -38,12 +38,14 @@ func (s *AggregatorService) FlushAggregates() {
 
 	if len(pulses) == 0 {
 		log.Println("[flush] No data to send.")
+
 		return
 	}
 
 	err := s.publisher.Publish(pulses)
 	if err != nil {
 		log.Printf("[flush] Error publishing data: %v\n", err)
+
 		return
 	}
 

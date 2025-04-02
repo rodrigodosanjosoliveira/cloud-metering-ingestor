@@ -7,6 +7,8 @@ import (
 	"ingestor/internal/infra/publisher"
 	"ingestor/internal/service"
 	"ingestor/internal/usecase"
+	"os"
+	"strconv"
 	"time"
 
 	"github.com/gin-gonic/gin"
@@ -47,7 +49,7 @@ func main() {
 
 	aggregatorService := usecase.NewAggregatorService(aggregator, pub)
 
-	aggregatorService.StartPeriodicFlush(1 * time.Minute)
+	aggregatorService.StartPeriodicFlush(getFlushInterval(log))
 
 	r.POST("/pulses", h.CreatePulse)
 	r.GET("/aggregates", h.GetAggregates)
@@ -61,4 +63,22 @@ func main() {
 	}
 
 	log.Info("Server stopped")
+}
+
+func getFlushInterval(log *zap.SugaredLogger) time.Duration {
+	intervalStr := os.Getenv("FLUSH_INTERVAL")
+	if intervalStr == "" {
+		log.Info("FLUSH_INTERVAL not set, using default value of 1 hour")
+
+		return 1 * time.Hour
+	}
+
+	interval, err := strconv.Atoi(intervalStr)
+	if err != nil {
+		log.Errorf("Invalid FLUSH_INTERVAL value: %v, using default value of 1 hour", err)
+
+		return 1 * time.Hour
+	}
+
+	return time.Duration(interval) * time.Second
 }
