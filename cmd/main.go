@@ -6,6 +6,8 @@ import (
 	"ingestor/internal/infra/metrics"
 	"ingestor/internal/infra/publisher"
 	"ingestor/internal/service"
+	"ingestor/internal/usecase"
+	"time"
 
 	"github.com/gin-gonic/gin"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
@@ -42,6 +44,10 @@ func main() {
 	aggregator := service.NewAggregatorService(pub)
 
 	h := handler.NewPulseHandler(log, aggregator)
+
+	aggregatorService := usecase.NewAggregatorService(aggregator, pub)
+
+	aggregatorService.StartPeriodicFlush(1 * time.Minute)
 
 	r.POST("/pulses", h.CreatePulse)
 	r.GET("/aggregates", h.GetAggregates)
