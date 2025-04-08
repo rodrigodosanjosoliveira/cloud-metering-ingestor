@@ -66,6 +66,7 @@ func (h *PulseHandler) CreatePulse(c *gin.Context) {
 
 	h.logger.Infow("Pulse added to aggregator", "pulse", pulse)
 
+	//TODO: ver open telemetry
 	metrics.PulsesReceived.Inc()
 
 	c.Status(http.StatusCreated)

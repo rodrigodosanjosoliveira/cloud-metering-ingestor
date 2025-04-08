@@ -56,6 +56,8 @@ func (a *AggregatorService) FlushAggregates() {
 }
 
 func (a *AggregatorService) GetAggregatedData() []dto.AggregatedPulse {
+	//TODO: agregação por tenant
+
 	a.mu.Lock()
 	defer a.mu.Unlock()
 
